@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Satisfaction Survey — Jumbo Technology</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', Arial, sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+  padding: 32px 16px 48px;
+  color: #1a1a2e;
+}
+
+.page { max-width: 780px; margin: 0 auto; }
+
+/* Header */
+.header-card {
+  background: #fff; border-radius: 14px;
+  padding: 28px 32px 24px; margin-bottom: 16px; border: 1px solid #e4e7ec;
+}
+.brand-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.brand-name { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; color: #1a1a2e; }
+.brand-name span { color: #0055cc; }
+.top-right { display: flex; align-items: center; gap: 10px; }
+.doc-id {
+  font-size: 12px; color: #8492a6;
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  background: #f5f7fa; padding: 4px 10px;
+  border-radius: 6px; border: 1px solid #e4e7ec;
+}
+
+/* Language Toggle */
+.lang-toggle {
+  display: flex; align-items: center; gap: 0;
+  border: 1.5px solid #e4e7ec; border-radius: 8px; overflow: hidden;
+}
+.lang-btn {
+  padding: 5px 13px; font-size: 12px; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.15s;
+  background: #fff; color: #8492a6; font-family: inherit;
+  letter-spacing: 0.03em;
+}
+.lang-btn.active { background: #0055cc; color: #fff; }
+.lang-btn:first-child { border-right: 1px solid #e4e7ec; }
+
+.survey-title { font-size: 20px; font-weight: 600; color: #1a1a2e; margin-bottom: 18px; }
+
+.meta-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.meta-field label {
+  display: block; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: #8492a6; margin-bottom: 5px;
+}
+.meta-field input {
+  width: 100%; border: 1.5px solid #e4e7ec; border-radius: 8px;
+  padding: 8px 12px; font-size: 14px; color: #1a1a2e;
+  background: #fff; transition: border-color 0.15s; font-family: inherit;
+}
+.meta-field input:focus { outline: none; border-color: #0055cc; }
+.date-wrap {
+  display: flex; gap: 5px; align-items: center;
+  border: 1.5px solid #e4e7ec; border-radius: 8px; padding: 6px 10px;
+}
+.date-wrap input {
+  border: none; padding: 2px 3px; font-size: 14px;
+  text-align: center; border-bottom: 1.5px solid #e4e7ec;
+  border-radius: 0; background: transparent; font-family: inherit;
+}
+.date-wrap input:focus { outline: none; border-bottom-color: #0055cc; }
+.date-wrap span { color: #8492a6; font-size: 13px; }
+
+.progress-bar { height: 4px; background: #e4e7ec; border-radius: 2px; margin-top: 16px; overflow: hidden; }
+.progress-fill { height: 100%; background: #0055cc; border-radius: 2px; transition: width 0.3s ease; width: 0%; }
+
+/* Legend */
+.legend-card {
+  background: #fff; border-radius: 14px; padding: 14px 32px;
+  margin-bottom: 16px; border: 1px solid #e4e7ec;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.legend-label { font-size: 11px; font-weight: 600; color: #8492a6; margin-right: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+.score-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+.s5 { background: #e6f4ea; color: #1e6e3a; }
+.s4 { background: #e8f0fe; color: #1a5cc8; }
+.s3 { background: #fef7e0; color: #8a5e0c; }
+.s2 { background: #fce8e6; color: #b31412; }
+.s1 { background: #f1f3f4; color: #5f6368; }
+
+/* Section */
+.section-card {
+  background: #fff; border-radius: 14px;
+  margin-bottom: 16px; border: 1px solid #e4e7ec; overflow: hidden;
+}
+.section-header {
+  padding: 13px 32px; background: #0055cc;
+  display: flex; align-items: center; gap: 12px;
+}
+.section-header h2 { font-size: 14px; font-weight: 600; color: #fff; }
+.section-num {
+  width: 26px; height: 26px; background: rgba(255,255,255,0.22);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+
+/* Table */
+.q-table { width: 100%; border-collapse: collapse; }
+.q-table thead tr { background: #f5f7fa; border-bottom: 1.5px solid #e4e7ec; }
+.q-table thead th {
+  padding: 10px 10px; font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em; color: #8492a6;
+  text-align: center; white-space: nowrap;
+}
+.q-table thead th:first-child { text-align: left; padding-left: 28px; }
+.q-table tbody tr { border-bottom: 1px solid #f0f2f5; transition: background 0.1s; }
+.q-table tbody tr:last-child { border-bottom: none; }
+.q-table tbody tr:hover { background: #f8f9fb; }
+.q-table tbody td { padding: 12px 10px; font-size: 13.5px; color: #344054; line-height: 1.5; vertical-align: middle; }
+.q-table tbody td:first-child { padding-left: 20px; }
+.q-table tbody td.score-cell { text-align: center; }
+.q-label-cell { display: flex; align-items: center; gap: 10px; }
+.q-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; background: #0055cc; color: #fff;
+  border-radius: 50%; font-size: 11px; font-weight: 600; flex-shrink: 0;
+}
+
+/* Radio */
+.score-radio { display: none; }
+.score-dot {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 2px solid #e4e7ec; font-size: 13px; font-weight: 600;
+  color: #8492a6; cursor: pointer; transition: all 0.15s; user-select: none;
+}
+.score-dot:hover { border-color: #0055cc; color: #0055cc; background: #f0f5ff; }
+.score-radio:checked + .score-dot { background: #0055cc; border-color: #0055cc; color: #fff; }
+
+/* Summary */
+.summary-card {
+  background: #fff; border-radius: 14px;
+  padding: 24px 32px; margin-bottom: 16px; border: 1px solid #e4e7ec;
+}
+.summary-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 22px; }
+.stat-box { background: #f5f7fa; border-radius: 10px; padding: 16px 20px; }
+.stat-box label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #8492a6; display: block; margin-bottom: 6px; }
+.stat-box .val { font-size: 28px; font-weight: 700; color: #0055cc; }
+.stat-box .val.ok { color: #1e7e3a; }
+.stat-box .val.warn { color: #e05c00; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #8492a6; margin-bottom: 5px; }
+.field input, .field textarea {
+  width: 100%; border: 1.5px solid #e4e7ec; border-radius: 8px;
+  padding: 9px 12px; font-size: 14px; color: #1a1a2e; font-family: inherit;
+  transition: border-color 0.15s;
+}
+.field input:focus, .field textarea:focus { outline: none; border-color: #0055cc; }
+.field textarea { resize: vertical; min-height: 80px; }
+.field.full { grid-column: 1 / -1; }
+
+/* Required field indicator */
+.req { color: #e03131; margin-left: 2px; }
+.field input.error, .meta-field input.error {
+  border-color: #e03131 !important;
+  background: #fff5f5;
+}
+.field-error {
+  font-size: 12px; color: #e03131; margin-top: 4px; display: none;
+}
+.field-error.show { display: block; }
+
+.action-row { display: flex; gap: 12px; align-items: center; }
+.submit-btn {
+  flex: 1; padding: 14px; background: #0055cc; color: #fff;
+  font-size: 15px; font-weight: 600; border: none; border-radius: 10px;
+  cursor: pointer; transition: background 0.15s; font-family: inherit;
+}
+.submit-btn:hover { background: #0040a0; }
+.submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
+.reset-btn {
+  padding: 14px 20px; background: #fff; color: #8492a6;
+  font-size: 14px; font-weight: 500; border: 1.5px solid #e4e7ec;
+  border-radius: 10px; cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.reset-btn:hover { border-color: #b0bac8; color: #344054; }
+
+/* Success */
+.success-card {
+  display: none; background: #fff; border-radius: 14px;
+  padding: 60px 32px; text-align: center; border: 1px solid #e4e7ec; margin-bottom: 16px;
+}
+.success-card h2 { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; }
+.success-card p { font-size: 15px; color: #8492a6; max-width: 420px; margin: 0 auto; line-height: 1.6; }
+.success-avg { font-size: 36px; font-weight: 700; color: #0055cc; margin: 18px 0 4px; }
+.success-avg-label { font-size: 13px; color: #8492a6; margin-bottom: 16px; }
+
+.footer { text-align: center; font-size: 12px; color: #8492a6; margin-top: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header-card">
+    <div class="brand-row">
+      <div class="brand-name">Jumbo <span>Technology</span></div>
+      <div class="top-right">
+        <div class="doc-id">4-SD-02</div>
+        <div class="lang-toggle">
+          <button class="lang-btn active" onclick="setLang('en')" id="btn-en">EN</button>
+          <button class="lang-btn" onclick="setLang('zh')" id="btn-zh">中文</button>
+        </div>
+      </div>
+    </div>
+    <div class="survey-title" data-i18n="surveyTitle"></div>
+    <div class="meta-grid">
+      <div class="meta-field">
+        <label data-i18n="vendor"></label>
+        <input type="text" value="Jumbo Technology" readonly style="background:#f5f7fa;color:#6b7a94;">
+      </div>
+      <div class="meta-field">
+        <label data-i18n="customer"></label>
+        <input type="text" id="customer" data-i18n-ph="customerPh" required>
+        <div class="field-error" id="err-customer" data-i18n="errCompany"></div>
+      </div>
+      <div class="meta-field">
+        <label data-i18n="date"></label>
+        <div class="date-wrap">
+          <input type="text" id="dy" placeholder="YYYY" maxlength="4" style="width:52px">
+          <span>/</span>
+          <input type="text" id="dm" placeholder="MM" maxlength="2" style="width:36px">
+          <span>/</span>
+          <input type="text" id="dd" placeholder="DD" maxlength="2" style="width:36px">
+        </div>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-card">
+    <span class="legend-label" data-i18n="scoreGuide"></span>
+    <span class="score-pill s5" data-i18n="s5"></span>
+    <span class="score-pill s4" data-i18n="s4"></span>
+    <span class="score-pill s3" data-i18n="s3"></span>
+    <span class="score-pill s2" data-i18n="s2"></span>
+    <span class="score-pill s1" data-i18n="s1"></span>
+  </div>
+
+  <form id="form">
+    <!-- Sections injected by JS -->
+    <div id="sections"></div>
+
+    <!-- Summary -->
+    <div class="summary-card">
+      <div class="summary-stats">
+        <div class="stat-box"><label data-i18n="totalPtsLabel"></label><div class="val" id="totalPts">—</div></div>
+        <div class="stat-box"><label data-i18n="avgPtsLabel"></label><div class="val" id="avgPts">—</div></div>
+      </div>
+      <div class="form-grid">
+        <div class="field">
+          <label data-i18n="evaluatorName"></label>
+          <input type="text" id="evaluator" data-i18n-ph="evaluatorPh" required>
+          <div class="field-error" id="err-evaluator" data-i18n="errFullName"></div>
+        </div>
+        <div class="field"><label data-i18n="evaluatorTitle"></label><input type="text" id="evalTitle" data-i18n-ph="evaluatorTitlePh"></div>
+        <div class="field full"><label data-i18n="comments"></label><textarea id="comments" data-i18n-ph="commentsPh"></textarea></div>
+      </div>
+      <div class="action-row">
+        <button type="button" class="reset-btn" id="resetBtn" onclick="resetAll()"></button>
+        <button type="submit" class="submit-btn" id="submitBtn"></button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Success -->
+  <div class="success-card" id="success">
+    <div style="font-size:52px;margin-bottom:14px">✅</div>
+    <h2 id="successTitle"></h2>
+    <div class="success-avg" id="successAvg">—</div>
+    <div class="success-avg-label" id="successAvgLabel"></div>
+    <p id="successMsg"></p>
+  </div>
+
+  <div class="footer">Jumbo Technology · Doc 4-SD-02</div>
+</div>
+
+<script>
+// ─── i18n Strings ──────────────────────────────────────────────────────────
+const I18N = {
+  en: {
+    surveyTitle: 'Customer Satisfaction Survey',
+    vendor: 'Vendor',
+    customer: 'Customer / Company *',
+    customerPh: 'Company name',
+    date: 'Date',
+    scoreGuide: 'Score Guide',
+    s5: '5 — Highly Satisfied',
+    s4: '4 — Satisfied',
+    s3: '3 — Average',
+    s2: '2 — Not Satisfied',
+    s1: '1 — Very Dissatisfied',
+    criteriaCol: 'Performance Evaluation Criteria',
+    totalPtsLabel: 'Total Points',
+    avgPtsLabel: 'Average Points',
+    evaluatorName: 'Evaluator Name *',
+    evaluatorPh: 'Full name',
+    evaluatorTitle: 'Title / Department',
+    evaluatorTitlePh: 'e.g. Operations Manager',
+    comments: 'Comments (Optional)',
+    commentsPh: 'Please share any additional feedback or suggestions for improvement...',
+    resetBtn: 'Reset',
+    submitBtn: 'Submit Survey',
+    alertMsg: (total, rem) => `Please score all ${total} questions before submitting.\n(${rem} question(s) remaining)`,
+    errCompany: 'Company name is required.',
+    errFullName: 'Full name is required.',
+    successTitle: 'Survey Submitted — Thank you!',
+    successAvgLabel: 'Average Score (out of 5.00)',
+    successMsg: 'Your feedback has been recorded. Jumbo Technology will review the results and follow up accordingly.',
+    sections: [
+      {
+        id: 'a', label: 'Product / Service Quality',
+        questions: [
+          'Does the product / service meet your requirements?',
+          'Is delivery time as expected?',
+          'Speed and efficiency in problem resolution',
+        ]
+      },
+      {
+        id: 'b', label: 'Service Attitude',
+        questions: [
+          'Professional knowledge of contact person',
+          'Response time',
+          'Attitude towards problem resolution',
+          'Friendliness of service personnel',
+        ]
+      },
+      {
+        id: 'c', label: 'Communication and Engagement',
+        questions: [
+          'Accuracy of documentation',
+          'Clarity of explanations',
+          'Responsiveness to customer feedback',
+          'Provided technical support',
+        ]
+      },
+      {
+        id: 'd', label: 'Issue Handling and Improvement',
+        questions: [
+          'Timeliness of issue resolution',
+          'Permanence of issue resolution',
+          'Improvement measures based on customer feedback',
+          'Ongoing improvement plans and execution',
+        ]
+      }
+    ]
+  },
+  zh: {
+    surveyTitle: '客戶滿意度調查表',
+    vendor: '供應商',
+    customer: '客戶 / 公司 *',
+    customerPh: '請輸入公司名稱',
+    date: '日期',
+    scoreGuide: '評分說明',
+    s5: '5 — 非常滿意',
+    s4: '4 — 滿意',
+    s3: '3 — 普通',
+    s2: '2 — 不滿意',
+    s1: '1 — 非常不滿意',
+    criteriaCol: '績效評估項目',
+    totalPtsLabel: '總分',
+    avgPtsLabel: '平均分數',
+    evaluatorName: '評估人姓名 *',
+    evaluatorPh: '請填寫全名',
+    evaluatorTitle: '職稱 / 部門',
+    evaluatorTitlePh: '例如：營運經理',
+    comments: '備註（選填）',
+    commentsPh: '請分享您的其他意見或改善建議⋯',
+    resetBtn: '重置',
+    submitBtn: '提交調查表',
+    alertMsg: (total, rem) => `請完成全部 ${total} 題的評分後再提交。\n（尚有 ${rem} 題未填寫）`,
+    errCompany: '公司名稱為必填欄位。',
+    errFullName: '姓名為必填欄位。',
+    successTitle: '調查表已提交，感謝您！',
+    successAvgLabel: '平均分數（滿分 5.00）',
+    successMsg: '您的意見已記錄完成。Jumbo Technology 將審閱結果並適時跟進。',
+    sections: [
+      {
+        id: 'a', label: '產品 / 服務品質',
+        questions: [
+          '產品 / 服務是否符合您的需求？',
+          '交付時間是否符合預期？',
+          '問題解決的速度與效率',
+        ]
+      },
+      {
+        id: 'b', label: '服務態度',
+        questions: [
+          '聯絡窗口的專業知識',
+          '回應時間',
+          '面對問題的處理態度',
+          '服務人員的親切度',
+        ]
+      },
+      {
+        id: 'c', label: '溝通與互動',
+        questions: [
+          '文件資料的準確性',
+          '說明解釋的清晰程度',
+          '對客戶意見的回應積極度',
+          '所提供的技術支援',
+        ]
+      },
+      {
+        id: 'd', label: '問題處理與持續改善',
+        questions: [
+          '問題解決的及時性',
+          '問題是否得到永久解決',
+          '根據客戶回饋所採取的改善措施',
+          '持續改善計畫的執行狀況',
+        ]
+      }
+    ]
+  }
+};
+
+// ─── State ─────────────────────────────────────────────────────────────────
+let currentLang = 'en';
+const allIds = [];
+let totalQ = 0;
+
+// ─── Build sections ─────────────────────────────────────────────────────────
+function buildSections(lang) {
+  const container = document.getElementById('sections');
+  container.innerHTML = '';
+  allIds.length = 0;
+  totalQ = 0;
+
+  I18N[lang].sections.forEach(sec => {
+    const card = document.createElement('div');
+    card.className = 'section-card';
+
+    const header = document.createElement('div');
+    header.className = 'section-header';
+    header.innerHTML = `<div class="section-num">${sec.id.toUpperCase()}</div><h2>${sec.label}</h2>`;
+    card.appendChild(header);
+
+    const table = document.createElement('table');
+    table.className = 'q-table';
+    table.innerHTML = `<thead><tr>
+      <th style="width:58%">${I18N[lang].criteriaCol}</th>
+      <th>5</th><th>4</th><th>3</th><th>2</th><th>1</th>
+    </tr></thead>`;
+
+    const tbody = document.createElement('tbody');
+    sec.questions.forEach((text, i) => {
+      const qid = sec.id + (i + 1);
+      allIds.push(qid);
+      totalQ++;
+
+      // Preserve existing answer
+      const existingVal = document.querySelector(`input[name="${qid}"]:checked`)?.value;
+
+      const tr = document.createElement('tr');
+      let html = `<td><div class="q-label-cell"><span class="q-num">${i + 1}</span><span>${text}</span></div></td>`;
+      [5,4,3,2,1].forEach(s => {
+        html += `<td class="score-cell">
+          <input type="radio" class="score-radio" name="${qid}" id="${qid}-${s}" value="${s}" onchange="calc()" ${existingVal == s ? 'checked' : ''}>
+          <label class="score-dot" for="${qid}-${s}">${s}</label>
+        </td>`;
+      });
+      tr.innerHTML = html;
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    card.appendChild(table);
+    container.appendChild(card);
+  });
+}
+
+// ─── Apply i18n to static elements ─────────────────────────────────────────
+function applyI18n(lang) {
+  const t = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+  document.getElementById('resetBtn').textContent = t.resetBtn;
+  document.getElementById('submitBtn').textContent = t.submitBtn;
+  document.title = `${t.surveyTitle} — Jumbo Technology`;
+  document.documentElement.lang = lang === 'zh' ? 'zh-TW' : 'en';
+}
+
+// ─── Switch language ────────────────────────────────────────────────────────
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('btn-zh').classList.toggle('active', lang === 'zh');
+  buildSections(lang);
+  applyI18n(lang);
+  calc();
+}
+
+// ─── Score calculation ──────────────────────────────────────────────────────
+function calc() {
+  let answered = 0, total = 0;
+  allIds.forEach(id => {
+    const el = document.querySelector(`input[name="${id}"]:checked`);
+    if (el) { answered++; total += parseInt(el.value); }
+  });
+
+  document.getElementById('prog').style.width = Math.round(answered / totalQ * 100) + '%';
+
+  if (answered === 0) {
+    document.getElementById('totalPts').textContent = '—';
+    document.getElementById('avgPts').textContent = '—';
+    return;
+  }
+  const avg = (total / answered).toFixed(2);
+  document.getElementById('totalPts').textContent = total;
+  const avgEl = document.getElementById('avgPts');
+  avgEl.textContent = avg;
+  avgEl.className = 'val' + (parseFloat(avg) >= 4 ? ' ok' : parseFloat(avg) < 3 ? ' warn' : '');
+}
+
+// ─── Reset ──────────────────────────────────────────────────────────────────
+function resetAll() {
+  document.getElementById('form').reset();
+  buildSections(currentLang);
+  document.getElementById('totalPts').textContent = '—';
+  document.getElementById('avgPts').textContent = '—';
+  document.getElementById('prog').style.width = '0%';
+  // Clear validation errors
+  document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+  document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+}
+
+// ─── Submit ─────────────────────────────────────────────────────────────────
+document.getElementById('form').addEventListener('submit', async e => {
+  e.preventDefault();
+
+  // Validate required fields: Company + Full Name
+  const t = I18N[currentLang];
+  let hasError = false;
+
+  const customerVal = document.getElementById('customer').value.trim();
+  const evaluatorVal = document.getElementById('evaluator').value.trim();
+
+  // Company
+  const errCompany = document.getElementById('err-customer');
+  const customerInput = document.getElementById('customer');
+  if (!customerVal) {
+    customerInput.classList.add('error');
+    errCompany.textContent = t.errCompany;
+    errCompany.classList.add('show');
+    hasError = true;
+  } else {
+    customerInput.classList.remove('error');
+    errCompany.classList.remove('show');
+  }
+
+  // Full Name
+  const errFullName = document.getElementById('err-evaluator');
+  const evaluatorInput = document.getElementById('evaluator');
+  if (!evaluatorVal) {
+    evaluatorInput.classList.add('error');
+    errFullName.textContent = t.errFullName;
+    errFullName.classList.add('show');
+    hasError = true;
+  } else {
+    evaluatorInput.classList.remove('error');
+    errFullName.classList.remove('show');
+  }
+
+  if (hasError) {
+    // Scroll to first error
+    document.querySelector('.error')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  // Validate all questions answered
+  const unanswered = allIds.filter(id => !document.querySelector(`input[name="${id}"]:checked`));
+  if (unanswered.length) {
+    alert(t.alertMsg(totalQ, unanswered.length));
+    return;
+  }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = currentLang === 'zh' ? '提交中...' : 'Submitting...';
+
+  let total = 0;
+  const scores = {};
+  allIds.forEach(id => {
+    const v = parseInt(document.querySelector(`input[name="${id}"]:checked`).value);
+    scores[id] = v; total += v;
+  });
+  const avg = (total / totalQ).toFixed(2);
+
+  const payload = {
+    vendor: 'Jumbo Technology',
+    customer: document.getElementById('customer').value,
+    date: `${document.getElementById('dy').value}-${document.getElementById('dm').value}-${document.getElementById('dd').value}`,
+    evaluator: document.getElementById('evaluator').value,
+    evaluator_title: document.getElementById('evalTitle').value,
+    comments: document.getElementById('comments').value,
+    language: currentLang,
+    scores,
+    total_points: total,
+    average_points: parseFloat(avg),
+    submitted_at: new Date().toISOString(),
+    customer_id: new URLSearchParams(location.search).get('id') || '',
+    token: new URLSearchParams(location.search).get('t') || ''
+  };
+
+  try {
+    await fetch('https://YOUR_N8N_WEBHOOK_URL/survey-response', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(err) { console.warn('Webhook:', err); }
+
+  // Show success
+  document.getElementById('form').style.display = 'none';
+  document.querySelectorAll('.section-card, .legend-card, .header-card').forEach(el => el.style.display = 'none');
+  document.getElementById('successTitle').textContent = t.successTitle;
+  document.getElementById('successAvgLabel').textContent = t.successAvgLabel;
+  document.getElementById('successMsg').textContent = t.successMsg;
+  document.getElementById('successAvg').textContent = avg;
+  document.getElementById('success').style.display = 'block';
+});
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+setLang('en');
+
+const n = new Date();
+document.getElementById('dy').value = n.getFullYear();
+document.getElementById('dm').value = String(n.getMonth()+1).padStart(2,'0');
+document.getElementById('dd').value = String(n.getDate()).padStart(2,'0');
+</script>
+</body>
+</html>

@@ -622,7 +622,7 @@ document.getElementById('form').addEventListener('submit', async e => {
   };
 
   try {
-    await fetch('https://YOUR_N8N_WEBHOOK_URL/survey-response', {
+    await fetch('https://jumbon8n.ngrok.io/webhook/survey-response', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
